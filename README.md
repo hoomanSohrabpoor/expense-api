@@ -1,7 +1,7 @@
-# Expense Management API
+ # Expense Management API
 
-A simple CRUD API for managing expenses, built with **FastAPI** and **Pydantic**.  
-Expenses are stored in memory using a Python dictionary (no database required).
+A CRUD API for managing expenses, built with **FastAPI**, **Pydantic**, **SQLAlchemy**, and **Alembic**.  
+Data is stored in a real **SQLite** database with proper relational structure.
 
 ## Features
 
@@ -15,24 +15,24 @@ Expenses are stored in memory using a Python dictionary (no database required).
   - `description`: required, 1–100 characters
   - `amount`: must be greater than 0
   - `category`: required, letters only (validated with regex)
-  - Separate input (`ExpenseIn`) and output (`ExpenseOut`) models
+- **Relational database with SQLAlchemy ORM**
+  - `users`, `categories`, and `expenses` tables
+  - One-to-Many relationships (a user has many expenses, a category has many expenses)
+- **Database migrations managed with Alembic**
 
-## Endpoints
+## Database Schema
 
-| Method | Endpoint | Description |
-|--------|-----------------------|----------------------------|
-| POST   | `/expenses`           | Create a new expense       |
-| GET    | `/expenses`           | Get all expenses           |
-| GET    | `/expenses/{id}`      | Get a single expense by ID |
-| PUT    | `/expenses/{id}`      | Update an expense by ID    |
-| DELETE | `/expenses/{id}`      | Delete an expense by ID    |
+The database structure is documented in the `docs/` folder:
 
-## Models
+- `docs/database-schema.drawio` (editable diagram)
+- `docs/database-schema.png` (image)
 
-**Input (ExpenseIn):**
-```json
-{
-  "description": "lunch",
-  "amount": 25.5,
-  "category": "food"
-}
+### Tables
+
+| Table        | Columns                                              |
+|--------------|------------------------------------------------------|
+| `users`      | id (PK), name                                        |
+| `categories` | id (PK), name                                        |
+| `expenses`   | id (PK), description, amount, user_id (FK), category_id (FK) |
+
+## Project Structure
