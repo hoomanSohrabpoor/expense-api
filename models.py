@@ -8,9 +8,10 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
 
     expenses = relationship("Expense", back_populates="user")
-
 
 class Category(Base):
     __tablename__ = "categories"
