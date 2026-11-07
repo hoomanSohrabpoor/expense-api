@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+
+msgid "Welcome to the Expense API"
+msgstr "Welcome to the Expense API"
+
+msgid "Expense not found"
+msgstr "Expense not found"
+
+msgid "Expense deleted successfully"
+msgstr "Expense deleted successfully"
+
+msgid "Username already taken"
+msgstr "Username already taken"
+
+msgid "Invalid username or password"
+msgstr "Invalid username or password"
+
+msgid "Login successful"
+msgstr "Login successful"
+
+msgid "Refresh token missing"
+msgstr "Refresh token missing"
+
+msgid "Invalid or expired refresh token"
+msgstr "Invalid or expired refresh token"
+
+msgid "Access token refreshed"
+msgstr "Access token refreshed"
+
+msgid "Logout successful"
+msgstr "Logout successful"

@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from database import SessionLocal
 from models import User
+from i18n import get_translator
 from auth import (
     hash_password,
     verify_password,
@@ -24,6 +25,10 @@ def get_db():
 
 expenses = {}
 next_id = 1
+
+@app.get("/")
+def home(_=Depends(get_translator)):
+    return {"message": _("Welcome to the Expense API")}
 
 class ExpenseIn(BaseModel):
     description: str = Field(min_length=1, max_length=100)
@@ -68,37 +73,37 @@ def get_all_expenses():
 
 
 @app.get("/expenses/{expense_id}", response_model=ExpenseOut)
-def get_expense(expense_id: int):
+def get_expense(expense_id: int, _=Depends(get_translator)):
     if expense_id not in expenses:
-        raise HTTPException(status_code=404, detail="Expense not found")
+        raise HTTPException(status_code=404, detail=_("Expense not found"))
     return expenses[expense_id]
 
 
 @app.put("/expenses/{expense_id}", response_model=ExpenseOut)
-def update_expense(expense_id: int, expense: ExpenseIn):
+def update_expense(expense_id: int, expense: ExpenseIn, _=Depends(get_translator)):
     if expense_id not in expenses:
-        raise HTTPException(status_code=404, detail="Expense not found")
+        raise HTTPException(status_code=404, detail=_("Expense not found"))
     expenses[expense_id] = {
         "id": expense_id,
         "description": expense.description,
         "amount": expense.amount,
-        "category": expense.category
+        "category": expense.category,
     }
     return expenses[expense_id]
 
 
 @app.delete("/expenses/{expense_id}")
-def delete_expense(expense_id: int):
+def delete_expense(expense_id: int, _=Depends(get_translator)):
     if expense_id not in expenses:
-        raise HTTPException(status_code=404, detail="Expense not found")
+        raise HTTPException(status_code=404, detail=_("Expense not found"))
     del expenses[expense_id]
-    return {"detail": "Expense deleted successfully"}
+    return {"detail": _("Expense deleted successfully")}
 
 @app.post("/register", status_code=201)
-def register(data: UserRegister, db: Session = Depends(get_db)):
+def register(data: UserRegister, db: Session = Depends(get_db), _=Depends(get_translator)):
     existing = db.query(User).filter(User.username == data.username).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Username already taken")
+        raise HTTPException(status_code=400, detail=_("Username already taken"))
 
     user = User(
         name=data.name,
@@ -109,13 +114,12 @@ def register(data: UserRegister, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     return {"id": user.id, "username": user.username}
-
 @app.post("/login")
-def login(data: UserLogin, response: Response, db: Session = Depends(get_db)):
+def login(data: UserLogin, response: Response, db: Session = Depends(get_db), _=Depends(get_translator)):
     user = db.query(User).filter(User.username == data.username).first()
 
     if not user or not verify_password(data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
+        raise HTTPException(status_code=401, detail=_("Invalid username or password"))
 
     access_token = create_access_token(user.username)
     refresh_token = create_refresh_token(user.username)
@@ -138,17 +142,17 @@ def login(data: UserLogin, response: Response, db: Session = Depends(get_db)):
         path="/refresh",
     )
 
-    return {"detail": "Login successful"}
+    return {"detail": _("Login successful")}
 
 @app.post("/refresh")
-def refresh(request: Request, response: Response):
+def refresh(request: Request, response: Response, _=Depends(get_translator)):
     token = request.cookies.get("refresh_token")
     if not token:
-        raise HTTPException(status_code=401, detail="Refresh token missing")
+        raise HTTPException(status_code=401, detail=_("Refresh token missing"))
 
     payload = decode_token(token)
     if not payload or payload.get("type") != "refresh":
-        raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
+        raise HTTPException(status_code=401, detail=_("Invalid or expired refresh token"))
 
     new_access_token = create_access_token(payload["sub"])
 
@@ -161,11 +165,10 @@ def refresh(request: Request, response: Response):
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
 
-    return {"detail": "Access token refreshed"}
-
+    return {"detail": _("Access token refreshed")}
 
 @app.post("/logout")
-def logout(response: Response):
+def logout(response: Response, _=Depends(get_translator)):
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token", path="/refresh")
-    return {"detail": "Logout successful"}
+    return {"detail": _("Logout successful")}

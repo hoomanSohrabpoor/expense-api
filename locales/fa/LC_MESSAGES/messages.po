@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fa\n"
+
+msgid "Welcome to the Expense API"
+msgstr "به API مدیریت هزینه خوش آمدید"
+
+msgid "Expense not found"
+msgstr "هزینه پیدا نشد"
+
+msgid "Expense deleted successfully"
+msgstr "هزینه با موفقیت حذف شد"
+
+msgid "Username already taken"
+msgstr "این نام کاربری قبلاً ثبت شده است"
+
+msgid "Invalid username or password"
+msgstr "نام کاربری یا رمز عبور اشتباه است"
+
+msgid "Login successful"
+msgstr "ورود با موفقیت انجام شد"
+
+msgid "Refresh token missing"
+msgstr "توکن تمدید ارسال نشده است"
+
+msgid "Invalid or expired refresh token"
+msgstr "توکن تمدید نامعتبر یا منقضی شده است"
+
+msgid "Access token refreshed"
+msgstr "توکن دسترسی تمدید شد"
+
+msgid "Logout successful"
+msgstr "خروج با موفقیت انجام شد"
